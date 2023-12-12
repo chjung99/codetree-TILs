@@ -26,9 +26,10 @@ for i in range(K):
         break
     # 1. 공격자 선정
     attacker = sorted(attackers, key=lambda x: (x[0], -x[1], -x[2], -x[3]))[0]
+    # print(attackers)
     ax = attacker[-1]
     ay = attacker[-2]
-    A[ax][ay] += (N+M)
+    A[ax][ay] += (N + M)
     T[ax][ay] = i + 1
     # 2. 공격자의 공격
 
@@ -63,6 +64,7 @@ for i in range(K):
         vis2 = [[0 for _ in range(M)] for __ in range(N)]
         cur = (ax, ay)
         dest = (tx, ty)
+
         queue2 = []
         while cur != dest:
 
@@ -84,12 +86,15 @@ for i in range(K):
                     break
             if not flag:
                 queue2.pop()
-            cur = queue2[-1]
+            try:
+                cur = queue2[-1]
+            except:
+                import pdb;pdb.set_trace()
         for k in queue2:
             if k == dest:
                 A[k[0]][k[1]] -= A[ax][ay]
             else:
-                T[k[0]][k[1]] = i+1
+                T[k[0]][k[1]] = i + 1
                 A[k[0]][k[1]] -= A[ax][ay] // 2
             if A[k[0]][k[1]] < 0:
                 A[k[0]][k[1]] = 0
@@ -112,7 +117,7 @@ for i in range(K):
             if ny >= M:
                 ny = ny % M
             if A[nx][ny] > 0:
-                T[nx][ny] = i+1
+                T[nx][ny] = i + 1
                 A[nx][ny] -= A[ax][ay] // 2
                 if A[nx][ny] < 0:
                     A[nx][ny] = 0
@@ -122,11 +127,15 @@ for i in range(K):
         for k in range(M):
             if A[j][k] < 0:
                 A[j][k] = 0
-            if T[j][k] != i+1:
+            if T[j][k] != i + 1 and A[j][k]>0:
                 A[j][k] += 1
-    
-    # 4. 포탑 정비
 
+    # 4. 포탑 정비
+    attackers.clear()
+    for j in range(N):
+        for k in range(M):
+            if A[j][k] != 0:
+                attackers.append([A[j][k], T[j][k], j + k, k, j])
 # K 번의 턴 종료 후 가장 강한 포탄의 공격력
 answer = 0
 for i in range(N):
