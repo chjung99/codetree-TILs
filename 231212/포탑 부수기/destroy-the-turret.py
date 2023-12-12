@@ -89,7 +89,7 @@ for i in range(K):
             try:
                 cur = queue2[-1]
             except:
-                import pdb;pdb.set_trace()
+                break
         for k in queue2:
             if k == dest:
                 A[k[0]][k[1]] -= A[ax][ay]
