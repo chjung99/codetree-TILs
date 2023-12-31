@@ -77,7 +77,7 @@ def rotate():
     for i in range(N):
         for j in range(N):
             if cand[0] <= i <= cand[2] and cand[1] <= j <= cand[3]:
-                tmp[i][j] = blocks[cand[0] + cand[2] - cand[0] + 1 - 1 - j][i - cand[0]]
+                tmp[i][j] = blocks[cand[2]-cand[0]+1-1-(j-cand[0]-cand[1])][i +(cand[1]-cand[0])]
             else:
                 tmp[i][j] = blocks[i][j]
     blocks = tmp
@@ -89,7 +89,7 @@ def rotate():
     for i in range(N):
         for j in range(N):
             if cand[0] <= i <= cand[2] and cand[1] <= j <= cand[3]:
-                tmp3[i][j] = tmp2[cand[0] + cand[2] - cand[0] + 1 - 1 - j][i - cand[0]]
+                tmp3[i][j] = tmp2[cand[2]-cand[0]+1-1-(j-cand[0]-cand[1])][i +(cand[1]-cand[0])]
             else:
                 tmp3[i][j] = tmp2[i][j]
     # for t in blocks:
@@ -119,4 +119,4 @@ while K > 0:
     # print(f"answer={answer}")
 
 print(answer)
-print(escape[0], escape[1])
+print(escape[0]+1, escape[1]+1)
