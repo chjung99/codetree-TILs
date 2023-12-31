@@ -84,7 +84,7 @@ def rotate():
 
     tmp2[escape[0]][escape[1]] = 1
     for gx, gy in gamers:
-        tmp2[gx][gy] = 2
+        tmp2[gx][gy] += 2
 
     for i in range(N):
         for j in range(N):
@@ -103,8 +103,9 @@ def rotate():
         for j in range(N):
             if tmp3[i][j] == 1:
                 new_escape.extend([i, j])
-            elif tmp3[i][j] == 2:
-                new_gamers.append([i, j])
+            elif tmp3[i][j] % 2 == 0:
+                for k in range(tmp3[i][j]//2):
+                    new_gamers.append([i, j])
     # print("====")
     gamers = new_gamers
     escape = new_escape
