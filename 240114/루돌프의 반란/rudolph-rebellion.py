@@ -18,7 +18,7 @@ for i in range(P):
 
 
 def move_rudolf(turn, rnx, rny):
-    global rx, ry, board, santa
+    global rx, ry, board, santa, santa_score
     # 충돌
     if board[rnx][rny] >= 1:
 
@@ -65,7 +65,7 @@ def move_rudolf(turn, rnx, rny):
 
 
 def move_santa(turn, si, snx, sny):
-    global santa, board
+    global santa, board, santa_score
 
     if santa[si] != [snx, sny]:
         # 루돌프와 충돌하는 경우
@@ -81,7 +81,8 @@ def move_santa(turn, si, snx, sny):
             else:
                 queue = deque([])
                 # 충돌 위치에 다른 산타가 존재
-                if board[ssnx][ssny] >= 1:
+                if board[ssnx][ssny] >= 1 and board[ssnx][ssny] != si:
+                # if board[ssnx][ssny] >= 1:
                     queue.append(board[ssnx][ssny])
                     board[ssnx][ssny] = si
                     santa[si] = [ssnx, ssny]
