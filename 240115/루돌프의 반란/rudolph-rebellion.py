@@ -25,7 +25,9 @@ def move_rudolf(turn, rnx, rny):
         si = board[rnx][rny]
 
         stun[si] = turn + 1
+
         santa_score[si] += C
+
         sdx, sdy = rnx - rx, rny - ry
         snx, sny = rnx, rny
 
@@ -39,7 +41,8 @@ def move_rudolf(turn, rnx, rny):
 
             queue = deque([])
             # 충돌 후 위치에 다른 산타 존재
-            if board[snx][sny] >= 1 and board[snx][sny] != si:
+            # if board[snx][sny] >= 1 and board[snx][sny] != si:
+            if board[snx][sny] >= 1:
                 # 일단 밀어냄
                 queue.append(board[snx][sny])
 
@@ -58,7 +61,7 @@ def move_rudolf(turn, rnx, rny):
                     santa[cur_idx] = [ssnx, ssny]
             else:
                 board[snx][sny] = si
-                santa[si] = snx, sny
+                santa[si] = [snx, sny]
 
     board[rx][ry] = -1
     board[rnx][rny] = 0
@@ -73,6 +76,7 @@ def move_santa(turn, si, snx, sny):
         if board[snx][sny] == 0:
             stun[si] = turn + 1
             santa_score[si] += D
+
             sdx, sdy = -(snx - santa[si][0]), -(sny - santa[si][1])
             ssnx, ssny = snx, sny
             for i in range(D):
@@ -86,6 +90,7 @@ def move_santa(turn, si, snx, sny):
                 if board[ssnx][ssny] >= 1 and board[ssnx][ssny] != si:
                     # if board[ssnx][ssny] >= 1:
                     queue.append(board[ssnx][ssny])
+                    board[santa[si][0]][santa[si][1]] = -1 # 이부분 수정
                     board[ssnx][ssny] = si
                     santa[si] = [ssnx, ssny]
 
@@ -99,6 +104,7 @@ def move_santa(turn, si, snx, sny):
                         if board[sssnx][sssny] >= 1:
                             queue.append(board[sssnx][sssny])
 
+
                         board[sssnx][sssny] = cur_idx
                         santa[cur_idx] = [sssnx, sssny]
 
@@ -106,6 +112,7 @@ def move_santa(turn, si, snx, sny):
                     board[santa[si][0]][santa[si][1]] = -1
                     board[ssnx][ssny] = si
                     santa[si] = [ssnx, ssny]
+        # 그 자리에 다른 산타가 없는 경우
         else:
             board[santa[si][0]][santa[si][1]] = -1
             board[snx][sny] = si
@@ -118,7 +125,7 @@ def find_nearest_rudolf(si):
     sx, sy = santa[si]
 
     sd = (rx - sx) ** 2 + (ry - sy) ** 2
-    cand = [[sd, sx, sy]]
+    cand = [[sd, sx, sy, 4]]
 
     for i in range(4):
         nx, ny = sx + dx[i], sy + dy[i]
@@ -126,7 +133,7 @@ def find_nearest_rudolf(si):
             continue
         d = (rx - nx) ** 2 + (ry - ny) ** 2
         cand.append([d, nx, ny, i])
-    cand.sort(key=lambda x: (x[0], i))
+    cand.sort(key=lambda x: (x[0], x[3]))
 
     return si, cand[0][1], cand[0][2]
 
@@ -156,11 +163,18 @@ def find_nearest_santa():
 for i in range(1, M + 1):
 
     move_rudolf(i, *find_nearest_santa())
+    # for b in board:
+    #     print(b[1:])
 
     for j in range(1, P + 1):
         if stun[j] < i and santa[j] != [-1, -1]:
             move_santa(i, *find_nearest_rudolf(j))
 
+    # for k, b in enumerate(board):
+    #     if k == 0:
+    #         continue
+    #     print(b[1:])
+    # print("==============")
     cnt = 0
 
     for j in range(1, P + 1):
@@ -172,6 +186,6 @@ for i in range(1, M + 1):
     if cnt == P:
         break
 
-print(" ".join(map(str, santa_score[1:P + 1])))
+    # print(" ".join(map(str, santa_score[1:P + 1])))
 # print(santa[1:P+1])
-# print(" ".join(map(str, santa_score[1:P + 1])))
+print(" ".join(map(str, santa_score[1:P + 1])))
