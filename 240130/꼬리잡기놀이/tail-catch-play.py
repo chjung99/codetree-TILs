@@ -20,7 +20,7 @@ def find_team_members(sx, sy, team_idx):
             nx, ny = cx + dx[i], cy + dy[i]
             if nx < 0 or nx >= n or ny < 0 or ny >= n:
                 continue
-            if not visit[nx][ny] and player_board[cx][cy] <= player_board[nx][ny] <= 3:
+            if not visit[nx][ny] and 1 <= player_board[nx][ny] <= player_board[cx][cy] + 1 and player_board[nx][ny]<=3:
                 visit[nx][ny] = 1
                 new_player = Player(nx, ny, player_board[nx][ny], team_idx)
                 queue.append([nx, ny])
@@ -34,15 +34,13 @@ def find_next_step(x, y):
         nx, ny = x + dx[i], y + dy[i]
         if nx < 0 or nx >= n or ny < 0 or ny >= n:
             continue
-        if player_board[nx][ny] == 4:
+        if player_board[nx][ny] >= 3:
             return [nx, ny]
-    return [nx, ny]
 
 
 def move_players(team):
     head = team[0]
     next_step = find_next_step(*head.location)
-
     pre_step = head.location
 
     player_board[next_step[0]][next_step[1]] = head.num
@@ -55,7 +53,8 @@ def move_players(team):
         pre_step = team[i].location
 
         player_board[next_step[0]][next_step[1]] = team[i].num
-        player_board[pre_step[0]][pre_step[1]] = 4
+        if player_board[pre_step[0]][pre_step[1]] != 1:
+            player_board[pre_step[0]][pre_step[1]] = 4
 
         team[i].location = next_step
 
@@ -111,7 +110,7 @@ def get_team_number_and_idx(location):
     for i in range(len(teams)):
         for j in range(len(teams[i])):
             if teams[i][j].location == location:
-                return i, j+1
+                return i, j + 1
     return -1, -1
 
 
@@ -124,6 +123,9 @@ def change_direction(team_number):
 
     player_board[head_location[0]][head_location[1]] = 3
     player_board[tail_location[0]][tail_location[1]] = 1
+
+    teams[team_number][0].num = 1
+    teams[team_number][-1].num = 3
 
 
 dx = [0, -1, 0, 1]
@@ -164,9 +166,14 @@ for i in range(k):
         ball_dir = 2
     else:
         ball_dir = 3
-
+    # for b in player_board:
+    #     print(b)
     for j in range(len(teams)):
         move_players(teams[j])
+    # print("====move====")
+    # for b in player_board:
+    #     print(b)
+    # print()
 
     hit_result = shoot_ball(ball_dir, ball_cnt)
     if hit_result != [-1, -1, -1]:
@@ -178,6 +185,15 @@ for i in range(k):
 
 print(score)
 '''
+7 3 5
+3 2 1 0 0 0 0
+4 0 4 0 2 1 4
+4 4 4 0 2 0 4
+0 0 0 0 3 4 4
+2 1 3 2 0 0 0
+2 0 0 2 0 0 0
+2 2 2 2 0 0 0
+
 7 2 2
 3 2 1 0 0 0 0
 4 0 4 0 2 1 4
@@ -186,6 +202,16 @@ print(score)
 0 0 4 4 4 0 4
 0 0 4 0 0 0 4
 0 0 4 4 4 4 4
+
+7 2 1
+3 2 1 0 0 0 0
+4 0 4 0 2 1 4
+4 4 4 0 2 0 4
+0 0 0 0 3 0 4
+0 0 4 4 4 0 4
+0 0 4 0 0 0 4
+0 0 4 4 4 4 4
+
 
 
 '''
