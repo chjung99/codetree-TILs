@@ -7,7 +7,6 @@ class Monster:
         self.direction = d
         self.alive = alive
         self.ttl = ttl
-        self.remove = False
 
     def rotate45(self):
         self.direction = (self.direction + 1) % 8
@@ -151,13 +150,22 @@ def move_packman(x, y, turn):
 
 
 def clear_dead_monsters(cur_turn):
-    for mon in monsters[:]:
+    global monsters
+    new_monsters = deque([])
+    while monsters:
+        mon = monsters.popleft()
         if not mon.alive and mon.ttl == cur_turn:
-            # board에서 제거
-            # board[mon.location[0]][mon.location[1]].remove(mon)
             ghost_board[mon.location[0]][mon.location[1]] -= 1
-            mon.remove = True
-            # monsters.remove(mon)
+            continue
+        new_monsters.append(mon)
+    monsters = new_monsters
+    # for mon in monsters:
+    #     if not mon.alive and mon.ttl == cur_turn:
+    #         # board에서 제거
+    #         # board[mon.location[0]][mon.location[1]].remove(mon)
+    #         ghost_board[mon.location[0]][mon.location[1]] -= 1
+    #         mon.remove = True
+    #         # monsters.remove(mon)
 
 
 def wake_monster_eggs():
@@ -188,7 +196,7 @@ def get_alive_monsters():
 
 m, t = map(int, input().split())
 px, py = map(int, input().split())  # 1,1 ~ 4,4
-monsters = []
+monsters = deque([])
 eggs = deque([])
 board = [[0 for _ in range(5)] for __ in range(5)]  # 1,1 ~ 4.4
 ghost_board = [[0 for _ in range(5)] for __ in range(5)]  # 1,1 ~ 4.4
