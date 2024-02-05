@@ -13,14 +13,14 @@ class Monster:
 
     def move(self, next_step):
         # board에서도 변경
-        for mon in board[self.location[0]][self.location[1]][:]:
-            if mon == self:
-                board[self.location[0]][self.location[1]].remove(mon)
+        # for mon in board[self.location[0]][self.location[1]][:]:
+        #     if mon == self:
+        #         board[self.location[0]][self.location[1]].remove(mon)
 
         self.location = next_step
 
         # board에서도 변경
-        board[self.location[0]][self.location[1]].append(self)
+        # board[self.location[0]][self.location[1]].append(self)
 
     def find_next_step(self):
         can_move = False
@@ -46,9 +46,12 @@ def is_out_board(nx, ny):
 
 
 def is_dead_monster(nx, ny):
-    for mon in board[nx][ny]:
-        if not mon.alive:
+    for mon in monsters:
+        if mon.location == [nx, ny] and not mon.alive:
             return True
+    # for mon in board[nx][ny]:
+    #     if not mon.alive:
+    #         return True
     return False
 
 
@@ -90,8 +93,9 @@ def find_best_path(cx, cy):
                 if is_out_board(nx, ny):
                     continue
                 else:
-                    for mon in board[nx][ny]:
-                        if mon.alive:
+                    # for mon in board[nx][ny]:
+                    for mon in monsters:
+                        if mon.location == [nx, ny] and mon.alive:
                             eat.append(mon)
                             cnt += 1
 
@@ -100,8 +104,9 @@ def find_best_path(cx, cy):
                 if is_out_board(nx, ny):
                     continue
                 else:
-                    for mon in board[nx][ny]:
-                        if mon.alive and mon not in eat:
+                    # for mon in board[nx][ny]:
+                    for mon in monsters:
+                        if mon.location == [nx, ny] and mon.alive and mon not in eat:
                             eat.append(mon)
                             cnt += 1
 
@@ -110,8 +115,8 @@ def find_best_path(cx, cy):
                 if is_out_board(nx, ny):
                     continue
                 else:
-                    for mon in board[nx][ny]:
-                        if mon.alive and mon not in eat:
+                    for mon in monsters:
+                        if mon.location == [nx, ny] and mon.alive and mon not in eat:
                             cnt += 1
                 result.append([cnt, str(i) + str(j) + str(k)])
 
@@ -120,7 +125,7 @@ def find_best_path(cx, cy):
 
 
 def move_and_eat(path, cur_turn):  # path = "123"
-    global px, py, monsters, board
+    global px, py, monsters
     for str_dir in path:
         cur_dir = (int(str_dir) - 1) * 2
 
@@ -133,14 +138,15 @@ def move_and_eat(path, cur_turn):  # path = "123"
                     mon.alive = False
                     mon.ttl = turn + 2
         # board에서 적용
-        for mon in board[px][py]:
-            if mon.alive:
-                mon.alive = False
-                mon.ttl = turn + 2
+        # for mon in board[px][py]:
+        #     if mon.alive:
+        #         mon.alive = False
+        #         mon.ttl = turn + 2
 
 
 def move_packman(x, y, turn):
     path = find_best_path(x, y)
+    # print(path)
     move_and_eat(path, turn)
 
 
@@ -148,7 +154,7 @@ def clear_dead_monsters(cur_turn):
     for mon in monsters[:]:
         if not mon.alive and mon.ttl == cur_turn:
             # board에서 제거
-            board[mon.location[0]][mon.location[1]].remove(mon)
+            # board[mon.location[0]][mon.location[1]].remove(mon)
 
             monsters.remove(mon)
 
@@ -159,7 +165,7 @@ def wake_monster_eggs():
     while eggs:
         egg = eggs.popleft()
         monster = Monster(egg.location[0], egg.location[1], egg.direction, True, -1)
-        board[egg.location[0]][egg.location[1]].append(monster)
+        # board[egg.location[0]][egg.location[1]].append(monster)
         monsters.append(monster)
 
 
@@ -176,25 +182,26 @@ m, t = map(int, input().split())
 px, py = map(int, input().split())  # 1,1 ~ 4,4
 monsters = []
 eggs = deque([])
-board = [[[] for _ in range(5)] for __ in range(5)]  # 1,1 ~ 4.4
+# board = [[[] for _ in range(5)] for __ in range(5)]  # 1,1 ~ 4.4
 dx = [-1, -1, 0, 1, 1, 1, 0, -1]
 dy = [0, -1, -1, -1, 0, 1, 1, 1]
 
 for _ in range(m):
     mx, my, md = map(int, input().split())
     monster = Monster(mx, my, md - 1, True, -1)
-    board[mx][my].append(monster)
+    # board[mx][my].append(monster)
     monsters.append(monster)
 
-for turn in range(t):
-    make_monster_eggs()
-    move_monsters()
+for turn in range(t):  # 25
+    make_monster_eggs()  # 100 0000
+    move_monsters()  # move board 때매 100 0000 * 100 0000
 
-    move_packman(px, py, turn)
+    move_packman(px, py, turn)  # 64 * 100 0000 + 3 * 100 0000
     clear_dead_monsters(turn)
     wake_monster_eggs()
-
-
+    # for mon in monsters:
+    #     print(mon.alive, mon.location, mon.direction, end=" ")
+    # print()
 
 print(get_alive_monsters())
 
