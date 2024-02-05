@@ -16,10 +16,11 @@ class Monster:
         # for mon in board[self.location[0]][self.location[1]][:]:
         #     if mon == self:
         #         board[self.location[0]][self.location[1]].remove(mon)
-
+        board[self.location[0]][self.location[1]] -= 1
         self.location = next_step
 
         # board에서도 변경
+        board[self.location[0]][self.location[1]] += 1
         # board[self.location[0]][self.location[1]].append(self)
 
     def find_next_step(self):
@@ -94,10 +95,8 @@ def find_best_path(cx, cy):
                     continue
                 else:
                     # for mon in board[nx][ny]:
-                    for mon in monsters:
-                        if mon.location == [nx, ny] and mon.alive:
-                            eat.append(mon)
-                            cnt += 1
+                    cnt += board[nx][ny]
+                    eat.append([nx, ny])
 
                 nx, ny = nx + dx[j_dir], ny + dy[j_dir]
 
@@ -105,19 +104,17 @@ def find_best_path(cx, cy):
                     continue
                 else:
                     # for mon in board[nx][ny]:
-                    for mon in monsters:
-                        if mon.location == [nx, ny] and mon.alive and mon not in eat:
-                            eat.append(mon)
-                            cnt += 1
+                    if [nx, ny] not in eat:
+                        cnt += board[nx][ny]
+                        eat.append([nx, ny])
 
                 nx, ny = nx + dx[k_dir], ny + dy[k_dir]
 
                 if is_out_board(nx, ny):
                     continue
                 else:
-                    for mon in monsters:
-                        if mon.location == [nx, ny] and mon.alive and mon not in eat:
-                            cnt += 1
+                    if [nx, ny] not in eat:
+                        cnt += board[nx][ny]
                 result.append([cnt, str(i) + str(j) + str(k)])
 
     result.sort(key=lambda x: (-x[0], x[1]))
@@ -137,6 +134,7 @@ def move_and_eat(path, cur_turn):  # path = "123"
                 if mon.location == [px, py]:
                     mon.alive = False
                     mon.ttl = turn + 2
+                    board[px][py] -= 1
         # board에서 적용
         # for mon in board[px][py]:
         #     if mon.alive:
@@ -166,15 +164,22 @@ def wake_monster_eggs():
         egg = eggs.popleft()
         monster = Monster(egg.location[0], egg.location[1], egg.direction, True, -1)
         # board[egg.location[0]][egg.location[1]].append(monster)
+        board[egg.location[0]][egg.location[1]] += 1
         monsters.append(monster)
 
 
 def get_alive_monsters():
-    global monsters
+    # global monsters
+    # cnt = 0
+    # for mon in monsters:
+    #     if mon.alive:
+    #         cnt += 1
+    # return cnt
+
     cnt = 0
-    for mon in monsters:
-        if mon.alive:
-            cnt += 1
+    for i in range(1, 5):
+        for j in range(1, 5):
+            cnt += board[i][j]
     return cnt
 
 
@@ -182,23 +187,23 @@ m, t = map(int, input().split())
 px, py = map(int, input().split())  # 1,1 ~ 4,4
 monsters = []
 eggs = deque([])
-# board = [[[] for _ in range(5)] for __ in range(5)]  # 1,1 ~ 4.4
+board = [[0 for _ in range(5)] for __ in range(5)]  # 1,1 ~ 4.4
 dx = [-1, -1, 0, 1, 1, 1, 0, -1]
 dy = [0, -1, -1, -1, 0, 1, 1, 1]
 
 for _ in range(m):
     mx, my, md = map(int, input().split())
     monster = Monster(mx, my, md - 1, True, -1)
-    # board[mx][my].append(monster)
+    board[mx][my] += 1
     monsters.append(monster)
 
 for turn in range(t):  # 25
     make_monster_eggs()  # 100 0000
-    move_monsters()  # move board 때매 100 0000 * 100 0000
+    move_monsters()  # 7 * 100 0000
 
-    move_packman(px, py, turn)  # 64 * 100 0000 + 3 * 100 0000
-    clear_dead_monsters(turn)
-    wake_monster_eggs()
+    move_packman(px, py, turn)  # 1 * 100 0000 + 3 * 100 0000
+    clear_dead_monsters(turn)  # 100 0000 * list remove -> 제거 안하고 표시만 하는 방향으로 수정 가능
+    wake_monster_eggs()  # 100 0000
     # for mon in monsters:
     #     print(mon.alive, mon.location, mon.direction, end=" ")
     # print()
@@ -210,6 +215,15 @@ print(get_alive_monsters())
 2 4
 2 1 4
 2 3 4
+
+
+4 1
+3 1
+1 3 5
+2 2 7
+3 4 6
+4 2 2
+
 
 4 2
 3 1
