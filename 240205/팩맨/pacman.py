@@ -7,6 +7,7 @@ class Monster:
         self.direction = d
         self.alive = alive
         self.ttl = ttl
+        self.remove = False
 
     def rotate45(self):
         self.direction = (self.direction + 1) % 8
@@ -48,7 +49,7 @@ def is_out_board(nx, ny):
 
 def is_dead_monster(nx, ny):
     for mon in monsters:
-        if mon.location == [nx, ny] and not mon.alive:
+        if mon.location == [nx, ny] and not mon.alive and not mon.remove:
             return True
     # for mon in board[nx][ny]:
     #     if not mon.alive:
@@ -153,8 +154,8 @@ def clear_dead_monsters(cur_turn):
         if not mon.alive and mon.ttl == cur_turn:
             # board에서 제거
             # board[mon.location[0]][mon.location[1]].remove(mon)
-
-            monsters.remove(mon)
+            mon.remove = True
+            # monsters.remove(mon)
 
 
 def wake_monster_eggs():
@@ -202,7 +203,7 @@ for turn in range(t):  # 25
     move_monsters()  # 7 * 100 0000
 
     move_packman(px, py, turn)  # 1 * 100 0000 + 3 * 100 0000
-    clear_dead_monsters(turn)  # 100 0000 * list remove -> 제거 안하고 표시만 하는 방향으로 수정 가능
+    clear_dead_monsters(turn)  # 100 0000
     wake_monster_eggs()  # 100 0000
     # for mon in monsters:
     #     print(mon.alive, mon.location, mon.direction, end=" ")
