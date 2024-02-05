@@ -48,14 +48,14 @@ def is_out_board(nx, ny):
 
 
 def is_dead_monster(nx, ny):
-    for mon in monsters:
-        if mon.location == [nx, ny] and not mon.alive and not mon.remove:
-            return True
+    # for mon in monsters:
+    #     if mon.location == [nx, ny] and not mon.alive and not mon.remove:
+    #         return True
     # for mon in board[nx][ny]:
     #     if not mon.alive:
     #         return True
-    return False
-
+    # return False
+    return ghost_board[nx][ny] > 0
 
 def is_packman(nx, ny):
     return nx == px and ny == py
@@ -136,6 +136,7 @@ def move_and_eat(path, cur_turn):  # path = "123"
                     mon.alive = False
                     mon.ttl = turn + 2
                     board[px][py] -= 1
+                    ghost_board[px][py] += 1
         # board에서 적용
         # for mon in board[px][py]:
         #     if mon.alive:
@@ -154,6 +155,7 @@ def clear_dead_monsters(cur_turn):
         if not mon.alive and mon.ttl == cur_turn:
             # board에서 제거
             # board[mon.location[0]][mon.location[1]].remove(mon)
+            ghost_board[mon.location[0]][mon.location[1]] -= 1
             mon.remove = True
             # monsters.remove(mon)
 
@@ -189,6 +191,7 @@ px, py = map(int, input().split())  # 1,1 ~ 4,4
 monsters = []
 eggs = deque([])
 board = [[0 for _ in range(5)] for __ in range(5)]  # 1,1 ~ 4.4
+ghost_board = [[0 for _ in range(5)] for __ in range(5)]  # 1,1 ~ 4.4
 dx = [-1, -1, 0, 1, 1, 1, 0, -1]
 dy = [0, -1, -1, -1, 0, 1, 1, 1]
 
@@ -200,7 +203,7 @@ for _ in range(m):
 
 for turn in range(t):  # 25
     make_monster_eggs()  # 100 0000
-    move_monsters()  # 7 * 100 0000
+    move_monsters()  # 7 * 100 0000 * 100 0000
 
     move_packman(px, py, turn)  # 1 * 100 0000 + 3 * 100 0000
     clear_dead_monsters(turn)  # 100 0000
