@@ -13,8 +13,7 @@ dy = [0, -1, -1, -1, 0, 1, 1, 1]
 
 for _ in range(m):
     x, y, d = map(int, input().split())
-    monsters[x][y][d-1] += 1
-
+    monsters[x][y][d - 1] += 1
 
 
 def get_alive_monsters():
@@ -39,7 +38,6 @@ def wake_eggs():
         for j in range(1, 5):
             for k in range(8):
                 monsters[i][j][k] += eggs[i][j][k]
-
 
 
 def is_out_board(nx, ny):
@@ -75,9 +73,10 @@ def move_monsters():
                 cnt = monsters[i][j][k]
                 if cnt > 0:
                     nx, ny, nd = find_next_step(i, j, k)
-                    tmp_monsters[i][j][k] = 0
+                    tmp_monsters[i][j][k] -= cnt
                     tmp_monsters[nx][ny][nd] += cnt
     monsters = tmp_monsters
+
 
 def find_next_path(cx, cy):
     result = []  # [몬스터수, "123"]
@@ -158,20 +157,20 @@ for turn in range(1, t + 1):
     #     print()
     move_monsters()
     # print("===move===")
+
+    move_packman(turn)
+    clear_dead_monsters(turn)
+    wake_eggs()
     # for i in range(1, 5):
     #     for j in range(1, 5):
     #         print(sum(monsters[i][j]), end=" ")
     #     print()
-    move_packman(turn)
-    clear_dead_monsters(turn)
-    wake_eggs()
-
+    # print()
 print(get_alive_monsters())
 '''
-4 1
-3 1
-1 3 5
-2 2 7
-3 4 6
-4 2 2
+2 4
+2 2
+2 3 2
+4 3 4
+
 '''
