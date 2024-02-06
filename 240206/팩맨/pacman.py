@@ -54,7 +54,7 @@ def is_dead_monster(nx, ny):
 
 def find_next_step(cx, cy, cd):
     nx, ny, nd = cx + dx[cd], cy + dy[cd], cd
-    cnt = 7
+    cnt = 8
     while cnt:
         if not is_out_board(nx, ny) and not is_packman(nx, ny) and not is_dead_monster(nx, ny):
             return nx, ny, nd
@@ -159,7 +159,12 @@ for turn in range(1, t + 1):
     # print("===move===")
     # for i in range(1, 5):
     #     for j in range(1, 5):
-    #         print(sum(monsters[i][j]), end=" ")
+    #         print(monsters[i][j], end=" ")
+    #     print()
+    # print()
+    # for i in range(1, 5):
+    #     for j in range(1, 5):
+    #         print(dead_monsters[i][j], end=" ")
     #     print()
     # print()
     move_packman(turn)
