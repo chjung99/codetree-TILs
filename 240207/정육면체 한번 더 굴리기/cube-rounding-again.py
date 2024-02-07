@@ -20,12 +20,15 @@ def find_same_numbers(cx, cy):
 
 
 class Dice:
-    def __init__(self, x, y, d, bottom_num):
+    def __init__(self, x, y, d):
         self.x = x
         self.y = y
         self.direction = d
-        self.bottom_num = bottom_num
+
         self.score = 0
+        self.top = 1
+        self.top_down = 2
+        self.top_right = 3
 
     def move(self):
         nx, ny = self.x + dx[self.direction], self.y + dy[self.direction]
@@ -42,17 +45,38 @@ class Dice:
         self.score += board[self.x][self.y] * cnt
 
     def compare_with_board(self):
-        if self.bottom_num > board[self.x][self.y]:
+        if abs(7-self.top) > board[self.x][self.y]:
             self.direction = (self.direction + 1) % 4
-        elif self.bottom_num < board[self.x][self.y]:
+        elif abs(7-self.top) < board[self.x][self.y]:
             if self.direction == 0:
                 self.direction = 3
             else:
                 self.direction -= 1
 
     def change_bottom_num(self):
-        self.bottom_num = dice_move[self.bottom_num][self.direction]
+        top = self.top
+        top_down = self.top_down
+        top_right = self.top_right
 
+        if self.direction == 0:
+            self.top = top_down
+            self.top_down = abs(7-top)
+            self.top_right = top_right
+
+        elif self.direction == 1:
+            self.top = abs(7-top_right)
+            self.top_down = top_down
+            self.top_right = top
+
+        elif self.direction == 2:
+            self.top = abs(7-top_down)
+            self.top_down = top
+            self.top_right = top_right
+
+        else:
+            self.top = top_right
+            self.top_down = top_down
+            self.top_right = abs(7-top)
 
 n, m = map(int, input().split())
 dx = [-1, 0, 1, 0]
@@ -60,8 +84,7 @@ dy = [0, 1, 0, -1]
 board = []  # 0,0 ~ n-1, n-1
 for _ in range(n):
     board.append(list(map(int, input().split())))
-dice = Dice(0, 0, 1, 6)
-dice_move = [[], [5, 3, 2 ,4], [6, 3, 1, 4], [5, 1, 2, 6], [5, 1, 2, 6], [6, 3, 1, 4], [5, 3, 2, 4]]
+dice = Dice(0, 0, 1)
 
 for _ in range(m):
     dice.move()
@@ -70,7 +93,7 @@ for _ in range(m):
 
 print(dice.score)
 '''
-4 3
+4 4
 1 2 4 4
 4 2 2 2
 5 2 6 6
