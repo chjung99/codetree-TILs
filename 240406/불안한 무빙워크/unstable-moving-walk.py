@@ -3,7 +3,7 @@ from collections import deque
 n, k = map(int, input().split())
 safety = list(map(int, input().split()))
 cnt = 0
-moving_walk = deque([[False, safety[i]] for i in range(2*n)])
+moving_walk = deque([[False, safety[i]] for i in range(len(safety))])
 
 
 def count_zero(moving_walk):
@@ -18,9 +18,11 @@ while True:
     if count_zero(moving_walk) >= k:
         break
     moving_walk.rotate(1)
+    if moving_walk[n - 1][0]:
+        moving_walk[n - 1][0] = False
     for i in range(n-2, -1, -1):
         if moving_walk[i][0]:
-            if not moving_walk[i+1][0] and moving_walk[i+1][i] > 0:
+            if not moving_walk[i+1][0] and moving_walk[i+1][1] > 0:
                 moving_walk[i][0] = False
                 moving_walk[i+1][0] = True
                 moving_walk[i+1][1] -= 1
