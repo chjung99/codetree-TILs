@@ -68,9 +68,9 @@ def find_nexts(cx, cy, cd, visit, blocks):
 
 def bfs(cx, cy, cd, blocks, temp):
     visit = [[0 for _ in range(n)] for __ in range(n)]
-    queue = deque([[cx, cy, n]])
+    queue = deque([[cx, cy, 5]])
     visit[cx][cy] = 1
-    temp[cx][cy] += n
+    temp[cx][cy] += 5
 
     while queue:
         cx, cy, cz = queue.popleft()
