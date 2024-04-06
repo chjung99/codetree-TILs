@@ -115,7 +115,7 @@ def bfs2(cx, cy, temp, blocks):
 def mix_air(temp, blocks):
     # bfs2(0, 0, temp, blocks)
     temp2 = [[0 for _ in range(n)] for __ in range(n)]
-    visit = []
+
     for i in range(n):
         for j in range(n):
             temp2[i][j] = temp[i][j]
@@ -125,16 +125,12 @@ def mix_air(temp, blocks):
                 nx, ny = i + dx[d], j + dy[d]
                 if nx < 0 or nx >= n or ny < 0 or ny >= n or is_blocked(i,j,d,blocks):
                     continue
-                diff = abs(temp[i][j] - temp[nx][ny])
-                if diff >= 4 and [nx, ny, i, j] not in visit:
-                    visit.append([i, j, nx, ny])
-                    diff = int(floor(diff / 4))
-                    if temp[i][j] > temp[nx][ny]:
-                        temp2[i][j] -= diff
-                        temp2[nx][ny] += diff
-                    else:
-                        temp2[i][j] += diff
-                        temp2[nx][ny] -= diff
+                if temp[nx][ny] >= temp[i][j]:
+                    continue
+                diff = (temp[i][j] - temp[nx][ny]) //4
+                temp2[i][j] -= diff
+                temp2[nx][ny] += diff
+
     for i in range(n):
         for j in range(n):
             temp[i][j] = temp2[i][j]
