@@ -19,7 +19,7 @@ for i in range(n):
             aircons.append([i, j, board_line[j]])
 for _ in range(m):
     x, y, s = map(int, input().split())
-    blocks.append([x-1, y-1, s])
+    blocks.append([x - 1, y - 1, s])
 
 
 def check(offices, temp, k):
@@ -74,7 +74,7 @@ def bfs(cx, cy, cd, blocks, temp):
 
     while queue:
         cx, cy, cz = queue.popleft()
-        if cz >=1:
+        if cz >= 1:
             nexts = find_nexts(cx, cy, cd, visit, blocks)
             for nx, ny in nexts:
                 visit[nx][ny] = 1
@@ -89,7 +89,7 @@ def run_aircon(aircons, blocks, temp):
 
 
 def bfs2(cx, cy, temp, blocks):
-    visit = [[0 for _ in range(n)]for __ in range(n)]
+    visit = [[0 for _ in range(n)] for __ in range(n)]
     visit[cx][cy] = 1
     queue = deque([[cx, cy]])
     while queue:
@@ -103,7 +103,7 @@ def bfs2(cx, cy, temp, blocks):
                 queue.append([nx, ny])
                 diff = abs(temp[cx][cy] - temp[nx][ny])
                 if diff >= 4:
-                    diff = int(floor(diff/4))
+                    diff = int(floor(diff / 4))
                     if temp[cx][cy] > temp[nx][ny]:
                         temp[cx][cy] -= diff
                         temp[nx][ny] += diff
@@ -122,8 +122,8 @@ def mix_air(temp, blocks):
     for i in range(n):
         for j in range(n):
             for d in range(4):
-                nx, ny = i+dx[d], j+dy[d]
-                if nx < 0 or nx >= n or ny < 0 or ny >= n:
+                nx, ny = i + dx[d], j + dy[d]
+                if nx < 0 or nx >= n or ny < 0 or ny >= n or is_blocked(i,j,d,blocks):
                     continue
                 diff = abs(temp[i][j] - temp[nx][ny])
                 if diff >= 4 and [nx, ny, i, j] not in visit:
@@ -143,7 +143,7 @@ def mix_air(temp, blocks):
 def drop_edges(temp):
     for i in range(n):
         for j in range(n):
-            if i == 0 or j ==0 or i == n-1 or j == n-1:
+            if i == 0 or j == 0 or i == n - 1 or j == n - 1:
                 if temp[i][j] > 0:
                     temp[i][j] -= 1
 
@@ -158,4 +158,9 @@ while True:
     mix_air(temp, blocks)
     drop_edges(temp)
     cur_time += 1
+    # for i in range(n):
+    #     for j in range(n):
+    #         print(temp[i][j], end=" ")
+    #     print("")
+    # print("")
 print(cur_time)
