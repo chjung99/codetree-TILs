@@ -74,11 +74,12 @@ def bfs(cx, cy, cd, blocks, temp):
 
     while queue:
         cx, cy, cz = queue.popleft()
-        nexts = find_nexts(cx, cy, cd, visit, blocks)
-        for nx, ny in nexts:
-            visit[nx][ny] = 1
-            queue.append([nx, ny, cz - 1])
-            temp[nx][ny] += cz - 1
+        if cz >=1:
+            nexts = find_nexts(cx, cy, cd, visit, blocks)
+            for nx, ny in nexts:
+                visit[nx][ny] = 1
+                queue.append([nx, ny, cz - 1])
+                temp[nx][ny] += cz - 1
 
 
 def run_aircon(aircons, blocks, temp):
