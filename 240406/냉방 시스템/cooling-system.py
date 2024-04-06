@@ -50,18 +50,18 @@ def find_nexts(cx, cy, cd, visit, blocks):
     nd = (cd - 2 + 1) % 4
     nx, ny = cx + dx[nd], cy + dy[nd]
     if 0 <= nx < n and 0 <= ny < n and not visit[nx][ny] and not is_blocked(cx, cy, nd, blocks):
-        nd = cd - 2
-        nx, ny = nx + dx[nd], ny + dy[nd]
-        if 0 <= nx < n and 0 <= ny < n and not visit[nx][ny] and not is_blocked(cx, cy, nd, blocks):
-            next_loc.append([nx, ny])
+        nnd = cd - 2
+        nnx, nny = nx + dx[nnd], ny + dy[nnd]
+        if 0 <= nnx < n and 0 <= nny < n and not visit[nnx][nny] and not is_blocked(nx, ny, nnd, blocks):
+            next_loc.append([nnx, nny])
 
     nd = (cd - 2 + 3) % 4
     nx, ny = cx + dx[nd], cy + dy[nd]
     if 0 <= nx < n and 0 <= ny < n and not visit[nx][ny] and not is_blocked(cx, cy, nd, blocks):
-        nd = cd - 2
-        nx, ny = nx + dx[nd], ny + dy[nd]
-        if 0 <= nx < n and 0 <= ny < n and not visit[nx][ny] and not is_blocked(cx, cy, nd, blocks):
-            next_loc.append([nx, ny])
+        nnd = cd - 2
+        nnx, nny = nx + dx[nnd], ny + dy[nnd]
+        if 0 <= nnx < n and 0 <= nny < n and not visit[nnx][nny] and not is_blocked(nx, ny, nnd, blocks):
+            next_loc.append([nnx, nny])
 
     return next_loc
 
@@ -74,7 +74,7 @@ def bfs(cx, cy, cd, blocks, temp):
 
     while queue:
         cx, cy, cz = queue.popleft()
-        if cz >= 1:
+        if cz > 1:
             nexts = find_nexts(cx, cy, cd, visit, blocks)
             for nx, ny in nexts:
                 visit[nx][ny] = 1
@@ -85,6 +85,7 @@ def bfs(cx, cy, cd, blocks, temp):
 def run_aircon(aircons, blocks, temp):
     for ax, ay, ad in aircons:
         nx, ny = ax + dx[ad - 2], ay + dy[ad - 2]
+
         bfs(nx, ny, ad, blocks, temp)
 
 
