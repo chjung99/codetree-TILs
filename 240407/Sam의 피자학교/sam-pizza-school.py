@@ -33,6 +33,7 @@ def roll_up(dough):
     upper_len, floor_len = 1, n - 1
 
     while upper_len <= floor_len:
+        next_fy = fy
         for col_diff in range(1, fy + 1, 1):
             if dough[fx][fy - col_diff] == 0:
                 break
@@ -41,9 +42,11 @@ def roll_up(dough):
                 dest_x, dest_y = fx - col_diff, fy + row_diff
                 if dough[src_x][src_y] == 0:
                     break
+                next_fy = max(next_fy, dest_y)
                 dough[dest_x][dest_y] = dough[src_x][src_y]
                 dough[src_x][src_y] = 0
-        fy = find_next_fy(dough)
+        # fy = find_next_fy(dough)
+        fy = next_fy + 1
         upper_len = get_column_len(fy - 1)
         floor_len = (n - 1 - fy) + 1
 
