@@ -57,13 +57,15 @@ def find_location(board):
     tmp = [[0, 0]]
     for i in range(n):
         for j in range(n):
+            tmp = [[i, j]]
             if board[i][j] >= 0:
                 cnt = board[i][j]
             elif board[i][j] == -2:
                 cnt = 0
+                cand.append([cnt, tmp])
+                continue
             else:
                 continue
-            tmp = [[i, j]]
             for d in range(4, 8, 1):
                 nx, ny = i, j
                 for r in range(k):
@@ -76,7 +78,11 @@ def find_location(board):
                         cnt += board[nx][ny]
                         tmp.append([nx, ny])
                     if board[nx][ny] == 0:
-                        cnt += board[nx][ny]
+                        cnt += 0
+                        tmp.append([nx, ny])
+                        break
+                    if board[nx][ny] == -2:
+                        cnt += 0
                         tmp.append([nx, ny])
                         break
             cand.append([cnt, tmp])
