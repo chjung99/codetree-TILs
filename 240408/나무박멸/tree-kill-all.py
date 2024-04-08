@@ -88,7 +88,10 @@ def find_location(board):
         cand.sort(key=lambda x: (-x[0], x[1][0][0], x[1][0][1]))
     except:
         import pdb;pdb.set_trace()
-    return cand[0]
+    if cand:
+        return cand[0]
+    else:
+        return 0, []
 
 
 def spread_jechoje(locations, year, c, board, jechojes):
@@ -102,11 +105,13 @@ def clear_expired(board, jechojes, year):
     while jechojes:
         x, y, expired = jechojes.popleft()
         if expired == year:
+            board[x][y] = 0
             continue
         new_jechojes.append([x, y, expired])
 
     while new_jechojes:
         x, y, expired = new_jechojes.popleft()
+        board[x][y] = -2
         jechojes.append([x, y, expired])
 
 
