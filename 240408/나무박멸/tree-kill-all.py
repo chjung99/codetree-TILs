@@ -53,8 +53,6 @@ def reproduce_trees(board):
 
 def find_location(board):
     cand = []
-    cnt = board[0][0]
-    tmp = [[0, 0]]
     for i in range(n):
         for j in range(n):
             tmp = [[i, j]]
@@ -86,14 +84,9 @@ def find_location(board):
                         tmp.append([nx, ny])
                         break
             cand.append([cnt, tmp])
-    try:
-        # for x, y in cand:
-        #     print(y)
-        #     print(y[0], y[1])
-        #     print("+++++++++++++")
-        cand.sort(key=lambda x: (-x[0], x[1][0][0], x[1][0][1]))
-    except:
-        import pdb;pdb.set_trace()
+
+    cand.sort(key=lambda x: (-x[0], x[1][0][0], x[1][0][1]))
+
     if cand:
         return cand[0]
     else:
@@ -127,6 +120,6 @@ for year in range(m):
     cnt, locations = find_location(board)
     removed_tree += cnt
     spread_jechoje(locations, year, c, board, jechojes)
-    clear_expired(board, jechojes, year)
+    # clear_expired(board, jechojes, year)
 
 print(removed_tree)
