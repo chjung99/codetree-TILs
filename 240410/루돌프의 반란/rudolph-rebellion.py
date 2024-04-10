@@ -136,7 +136,8 @@ def collision_by_santa(rudolf, sx, sy, move_dir, santas, santa_state, santa_scor
                 put_santa(sx, sy, snx, sny, santa_num, santas, board)
                 break
             next_santa_num = board[snx][sny]
-            put_santa(sx, sy, snx, sny, santa_num, santas, board)
+            if [sx, sy] != [snx, sny]:
+                put_santa(sx, sy, snx, sny, santa_num, santas, board)
             santa_num = next_santa_num
             sx, sy = snx, sny
             snx, sny = sx - dx[move_dir], sy - dy[move_dir]
