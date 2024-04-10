@@ -125,6 +125,8 @@ def collision_by_santa(rudolf, sx, sy, move_dir, santas, santa_state, santa_scor
         board[sx][sy] = 0
         santas[santa_num][0], santas[santa_num][1] = -1, -1
         santa_state[santa_num] = -1
+    elif board[snx][sny] == santa_num:
+        pass
     elif board[snx][sny] == 0:
         put_santa(sx, sy, snx, sny, santa_num, santas, board)
         santa_state[santa_num] = turn + 1
