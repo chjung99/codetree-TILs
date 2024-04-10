@@ -56,6 +56,8 @@ def collision_by_rudolf(rx, ry, sx, sy, santa_num, move_dir, board, santas, sant
     else:
         while True:
             if out_of_range(snx, sny):
+                santas[santa_num][0], santas[santa_num][1] = -1, -1
+                santa_state[santa_num] = -1
                 break
             if board[snx][sny] == 0:
                 put_santa(sx, sy, snx, sny, santa_num, santas, board)
