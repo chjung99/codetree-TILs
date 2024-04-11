@@ -1,7 +1,7 @@
 from collections import deque
 
 
-def every_player_exit(player_board):
+def every_player_exit_location(player_board):
     for i in range(N):
         for j in range(N):
             if len(player_board[i][j]) != 0:
@@ -22,31 +22,32 @@ def move_player(new_player_board, player_board, x, y, nx, ny):
         new_player_board[nx][ny].append(player_board[x][y].popleft())
 
 
-def move_every_player(player_board, board, exit):
+def move_every_player(player_board, board, exit_location):
     global total_move
 
     new_player_board = [[deque([]) for _ in range(N)] for __ in range(N)]
+
     for i in range(N):
         for j in range(N):
             if len(player_board[i][j]) == 0:
                 continue
             cand = []
-            cur_dist = get_dist(i, j, exit[0], exit[1])
+            cur_dist = get_dist(i, j, exit_location[0], exit_location[1])
             for d in range(4):
                 nx, ny = i + dx[d], j + dy[d]
                 if out_of_range(nx, ny) or board[nx][ny] >= 1:
                     continue
-                next_dist = get_dist(nx, ny, exit[0], exit[1])
+                next_dist = get_dist(nx, ny, exit_location[0], exit_location[1])
                 if next_dist >= cur_dist:
                     continue
                 cand.append([next_dist, d, nx, ny])
             if len(cand) == 0:
                 move_player(new_player_board, player_board, i, j, i, j)
             else:
-                total_move += 1
+                total_move += len(player_board[i][j])
                 cand.sort(key=lambda x: (x[0], x[1]))
                 next_dist, next_dir, nx, ny = cand[0]
-                if [nx, ny] != exit:
+                if [nx, ny] != exit_location:
                     move_player(new_player_board, player_board, i, j, nx, ny)
                 else:
                     player_board[i][j].clear()
@@ -56,19 +57,19 @@ def move_every_player(player_board, board, exit):
                 player_board[i][j].append(new_player_board[i][j].popleft())
 
 
-def available_square(cx, cy, size, player_board, board, exit):
+def available_square(cx, cy, size, player_board, board, exit_location):
     in_player = False
-    in_exit = False
+    in_exit_location = False
     for i in range(size):
         for j in range(size):
-            if [cx + i, cy + j] == exit:
-                in_exit = True
+            if [cx + i, cy + j] == exit_location:
+                in_exit_location = True
             elif len(player_board[cx + i][cy + j]) > 0:
                 in_player = True
-    return in_player and in_exit
+    return in_player and in_exit_location
 
 
-def rotate_square(fx, fy, fd, player_board, board, exit):
+def rotate_square(fx, fy, fd, player_board, board, exit_location):
     new_board = [[0 for _ in range(N)] for __ in range(N)]
     new_player_board = [[deque([]) for _ in range(N)] for __ in range(N)]
 
@@ -76,10 +77,8 @@ def rotate_square(fx, fy, fd, player_board, board, exit):
         for j in range(fd):
             src_x, src_y = fx+i, fy+j
             dest_x, dest_y = fx+j, fy+fd-i-1
-            # if board[src_x][src_y] == 0 or len(player_board[src_x][src_y]) ==0:
-            #     continue
             if board[src_x][src_y] == -1:
-                exit[0], exit[1] = dest_x, dest_y
+                exit_location[0], exit_location[1] = dest_x, dest_y
             new_board[dest_x][dest_y] = board[src_x][src_y]
             if board[src_x][src_y] > 0:
                 new_board[dest_x][dest_y] -= 1
@@ -90,7 +89,7 @@ def rotate_square(fx, fy, fd, player_board, board, exit):
         for j in range(fd):
             board[fx+i][fy+j] = new_board[fx+i][fy+j]
             move_player(player_board, new_player_board, fx+i, fy+j, fx+i, fy+j)
-def rotate_board(player_board, board, exit):
+def rotate_board(player_board, board, exit_location):
     cand = []
     for i in range(N):
         for j in range(N):
@@ -98,15 +97,14 @@ def rotate_board(player_board, board, exit):
                 fx, fy = i + d - 1, j + d - 1
                 if out_of_range(fx, fy):
                     continue
-                if not available_square(i, j, d, player_board, board, exit):
+                if not available_square(i, j, d, player_board, board, exit_location):
                     continue
                 cand.append([i, j, d])
+
     cand.sort(key=lambda x: (x[2], x[1], x[0]))
-    try:
-        fx, fy, fd = cand[0]
-        rotate_square(fx, fy, fd, player_board, board, exit)
-    except:
-        import pdb;pdb.set_trace()
+    fx, fy, fd = cand[0]
+    rotate_square(fx, fy, fd, player_board, board, exit_location)
+
 
 
 N, M, K = map(int, input().split())
@@ -127,13 +125,13 @@ for i in range(M):
 ex, ey = map(int, input().split())
 ex, ey = ex - 1, ey - 1
 board[ex][ey] = -1
-exit = [ex, ey]
+exit_location = [ex, ey]
 
 for _ in range(K):
-    
-    move_every_player(player_board, board, exit)
-    if every_player_exit(player_board):
+    move_every_player(player_board, board, exit_location)
+    if every_player_exit_location(player_board):
         break
-    rotate_board(player_board, board, exit)
+    rotate_board(player_board, board, exit_location)
+
 print(total_move)
-print(exit[0]+1, exit[1]+1)
+print(exit_location[0]+1, exit_location[1]+1)
