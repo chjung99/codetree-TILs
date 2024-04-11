@@ -75,8 +75,8 @@ def rotate_square(fx, fy, fd, player_board, board, exit_location):
 
     for i in range(fd):
         for j in range(fd):
-            src_x, src_y = fx+i, fy+j
-            dest_x, dest_y = fx+j, fy+fd-i-1
+            src_x, src_y = fx + i, fy + j
+            dest_x, dest_y = fx + j, fy + fd - i - 1
             if board[src_x][src_y] == -1:
                 exit_location[0], exit_location[1] = dest_x, dest_y
             new_board[dest_x][dest_y] = board[src_x][src_y]
@@ -84,11 +84,12 @@ def rotate_square(fx, fy, fd, player_board, board, exit_location):
                 new_board[dest_x][dest_y] -= 1
             move_player(new_player_board, player_board, src_x, src_y, dest_x, dest_y)
 
-
     for i in range(fd):
         for j in range(fd):
-            board[fx+i][fy+j] = new_board[fx+i][fy+j]
-            move_player(player_board, new_player_board, fx+i, fy+j, fx+i, fy+j)
+            board[fx + i][fy + j] = new_board[fx + i][fy + j]
+            move_player(player_board, new_player_board, fx + i, fy + j, fx + i, fy + j)
+
+
 def rotate_board(player_board, board, exit_location):
     cand = []
     for i in range(N):
@@ -101,10 +102,9 @@ def rotate_board(player_board, board, exit_location):
                     continue
                 cand.append([i, j, d])
 
-    cand.sort(key=lambda x: (x[2], x[1], x[0]))
+    cand.sort(key=lambda x: (x[2], x[0], x[1]))
     fx, fy, fd = cand[0]
     rotate_square(fx, fy, fd, player_board, board, exit_location)
-
 
 
 N, M, K = map(int, input().split())
@@ -132,6 +132,15 @@ for _ in range(K):
     if every_player_exit_location(player_board):
         break
     rotate_board(player_board, board, exit_location)
-
+    # for i in range(N):
+    #     for j in range(N):
+    #         print(board[i][j], end = " ")
+    #     print("")
+    # print("======")
+    # for i in range(N):
+    #     for j in range(N):
+    #         print(player_board[i][j], end = " ")
+    #     print("")
+    # print("======")
 print(total_move)
-print(exit_location[0]+1, exit_location[1]+1)
+print(exit_location[0] + 1, exit_location[1] + 1)
