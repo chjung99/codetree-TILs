@@ -135,6 +135,8 @@ def collision_by_santa(rudolf, sx, sy, move_dir, santas, santa_state, santa_scor
     else:
         while True:
             if out_of_range(snx, sny):
+                santas[santa_num][0], santas[santa_num][1] = -1, -1
+                santa_state[santa_num] = -1
                 break
             if board[snx][sny] == 0:
                 put_santa(sx, sy, snx, sny, santa_num, santas, board)
@@ -198,5 +200,10 @@ for turn in range(M):
     for i in range(1, P + 1):
         if santa_state[i] != -1:
             santa_score[i] += 1
+    # for i in range(N):
+    #     for j in range(N):
+    #         print(board[i][j], end=" ")
+    #     print("")
+    # print("================")
 for i in range(1, P + 1):
     print(santa_score[i], end=" ")
