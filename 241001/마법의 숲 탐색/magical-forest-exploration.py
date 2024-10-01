@@ -1,4 +1,5 @@
 from collections import deque
+from xmlrpc.client import FastParser
 
 R, C, K = map(int ,input().split())
 dx = [-1, 0, 1, 0]
@@ -93,9 +94,15 @@ class Golam:
         return can_move_to(next_west_locations, board) and \
             can_move_to(next_south_locations, board)
 
-    def is_out_of_board(self, board):
-        locations = [[self.cx + dx[i], self.cy + dy[i]] for i in range(4)]
-        return not can_move_to(locations, board)
+    def is_out_of_board(self):
+        if self.cx < 1 or self.cx > R or self.cy < 1 or self.cy > C:
+            return True
+
+        for i in range(4):
+            nx, ny = self.cx + dx[i], self.cy + dy[i]
+            if nx < 1 or nx > R or ny < 1 or ny > C:
+                return True
+        return False
 golams = []
 board = [[0 for _ in range(C+1)]for __ in range(R+1)]
 door = [[0 for _ in range(C+1)]for __ in range(R+1)]
@@ -149,7 +156,7 @@ for i in range(K):
         else:
             break
 
-    if golams[i].is_out_of_board(board):
+    if golams[i].is_out_of_board():
         for g in cur_golams:
             g.pop_on_board(board)
         cur_golams.clear()
