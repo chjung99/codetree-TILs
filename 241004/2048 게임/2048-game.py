@@ -70,7 +70,7 @@ def find_max(board):
 
 def dfs(move_dir, depth, board):
     global ans
-    if depth > 5:
+    if depth >= 5:
         ans = max(ans, find_max(board))
         return
     new_board = move_board(move_dir, board)
