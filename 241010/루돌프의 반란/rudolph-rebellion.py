@@ -90,11 +90,14 @@ def get_santa_dir(santa, rudolf, santa_list):
         dist = (nx - rudolf.x) ** 2 + (ny - rudolf.y) ** 2
         cand.append([dist, d])
     cand.sort(key=lambda x: (x[0], x[1]))
-    final_dist, final_dir = cand[0]
-    if final_dist >= cur_dist:
-        return -1
+    if len(cand) > 0:
+        final_dist, final_dir = cand[0]
+        if final_dist >= cur_dist:
+            return -1
+        else:
+            return final_dir
     else:
-        return final_dir
+        return -1
 
 
 N, M, P, C, D = map(int, input().split())
@@ -111,6 +114,7 @@ for _ in range(P):
     sx -= 1
     sy -= 1
     santa_list[pn] = Santa(sx, sy)
+
 
 for turn in range(1, M + 1):
     valid_santa_num = get_valid_santa_num(santa_list)
