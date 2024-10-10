@@ -130,7 +130,7 @@ for _ in range(k):
             nx, ny = find_lose_player_next_step(lose_player)
             while out_of_range(nx, ny) or check_another_player_here(nx, ny, lose_player, player_list):
                 lose_player.rotate_dir()
-                nx, ny = find_player_next_step(lose_player)
+                nx, ny = find_lose_player_next_step(lose_player)
             lose_player.move_to(nx, ny)
             lose_player.get_gun(gun_list)
 
