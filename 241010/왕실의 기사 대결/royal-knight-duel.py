@@ -73,6 +73,8 @@ for _ in range(Q):
         cur_knight = queue.popleft()
         for x, y in cur_knight.points:
             for another_knight in copy_knight_list:
+                if another_knight.k <= 0:
+                    continue
                 if cur_knight == another_knight:
                     continue
                 if [x, y] in another_knight.points:
@@ -82,7 +84,7 @@ for _ in range(Q):
                     if include_blocked(another_knight.points):
                         is_blocked = True
                         break
-                    break
+
             if is_blocked:
                 break
     if not is_blocked:
@@ -93,7 +95,21 @@ for _ in range(Q):
             knight.k -= damage
             knight.damage += damage
         knight_list = deepcopy(copy_knight_list)
+
 for knight in knight_list:
     if knight.k > 0:
         ans += knight.damage
 print(ans)
+
+# 4 3 4
+# 0 0 1 0
+# 0 0 1 0
+# 1 1 0 1
+# 0 0 1 0
+# 1 2 2 1 5
+# 2 1 2 1 1
+# 3 2 1 2 3
+# 1 2
+# 1 2
+# 3 3
+# 3 0
