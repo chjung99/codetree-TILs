@@ -73,7 +73,7 @@ def find_start_base_camp(person, base_list, board):
     bfs(person.tx, person.ty, dist, board)
     cand = []
     for bx, by in base_list:
-        if board[bx][by] == -1 or dist[nx][ny] == -1:
+        if board[bx][by] == -1 or dist[bx][by] == -1:
             continue
         cand.append([dist[bx][by], bx, by])
     cand.sort(key=lambda x: (x[0], x[1], x[2]))
