@@ -45,7 +45,7 @@ def find_person_move_dir(person, board):
     cand.sort(key=lambda x: (x[0], x[1]))
     if len(cand) > 0:
         return cand[0][1]
-    return None
+
 
 def check_person_arrived(person):
     return (person.tx, person.ty) == (person.x, person.y)
@@ -73,13 +73,13 @@ def find_start_base_camp(person, base_list, board):
     bfs(person.tx, person.ty, dist, board)
     cand = []
     for bx, by in base_list:
-        if board[bx][by] == -1 or dist[bx][by] == -1:
+        if board[bx][by] == -1 or dist[nx][ny] == -1:
             continue
         cand.append([dist[bx][by], bx, by])
     cand.sort(key=lambda x: (x[0], x[1], x[2]))
     if len(cand) > 0:
         return cand[0][1], cand[0][2]
-    return None
+
 
 def get_num_of_arrived(person_list):
     cnt = 0
