@@ -89,6 +89,7 @@ def throw_ball(cur_round, team_order_list, team_location_list):
         if team_num != -1:
             change_head_tail(team_num, team_order_list)
             return person_num ** 2
+    return 0
 
 n, m, k = map(int, input().split())
 board = []
