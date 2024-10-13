@@ -25,6 +25,13 @@ class Knight:
                 cnt += 1
         return cnt
 
+    def copy(self):
+        # Knight 객체를 얕은 복사하되, 리스트는 새롭게 만들어줍니다
+        new_knight = Knight(self.x, self.y, self.h, self.w, self.k)
+        new_knight.damage = self.damage
+        new_knight.points = [p[:] for p in self.points]  # 깊은 복사 필요
+        return new_knight
+
 
 L, N, Q = map(int, input().split())
 board = []
@@ -59,7 +66,7 @@ for _ in range(Q):
     i -= 1
     if knight_list[i].k <= 0:
         continue
-    copy_knight_list = [row[:] for row in knight_list]
+    copy_knight_list = [knight.copy() for knight in knight_list]  # deepcopy 대신 copy 사용
     knight = copy_knight_list[i]
     knight.move(d)
     is_blocked = False
@@ -94,7 +101,7 @@ for _ in range(Q):
             damage = knight.count_trap(board)
             knight.k -= damage
             knight.damage += damage
-        knight_list = [row[:] for row in copy_knight_list]
+        knight_list = [knight.copy() for knight in copy_knight_list]  # deepcopy 대신 copy 사용
 
 for knight in knight_list:
     if knight.k > 0:
