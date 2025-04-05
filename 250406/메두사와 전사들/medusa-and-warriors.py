@@ -179,9 +179,9 @@ def move_warriors(sx, sy, warriors):
             if len(cand) == 0:
                 tmp.append([x, y])
                 continue
-            
+
             cand.sort(key=lambda q:(q[0],q[1]))
-            
+
             nxt_dist, nd = cand[0]
             if nxt_dist<cur_dist:
                 total_dist += 1
@@ -193,7 +193,7 @@ def move_warriors(sx, sy, warriors):
                     cur_dist = abs(x - sx) + abs(y - sy)
                     cand = []
                     for i in range(4):
-                        nx, ny = x + dx[i], y + dy[i]
+                        nx, ny = x + d2x[i], y + d2y[i]
                         if out_of_range(nx, ny): continue
                         if not light_area[nx][ny] or shadow_area[nx][ny]:
                             cand.append([abs(nx - sx) + abs(ny - sy), i])
@@ -204,7 +204,7 @@ def move_warriors(sx, sy, warriors):
                     nxt_dist, nd = cand[0]
                     if nxt_dist < cur_dist:
                         total_dist += 1
-                        nx, ny = x + dx[nd], y + dy[nd]
+                        nx, ny = x + d2x[nd], y + d2y[nd]
                         if (nx, ny) == (sx, sy):
                             cnt += 1
                         else:
@@ -230,7 +230,8 @@ road = []
 tmp = list(map(int, input().split()))
 dx = [-1, 1, 0, 0]
 dy = [0, 0, -1, 1]
-
+d2x = [0, 0, -1, 1]
+d2y = [-1, 1, 0, 0]
 for i in range(0, 2 * M, 2):
     warriors.append(tmp[i:i + 2])
 
