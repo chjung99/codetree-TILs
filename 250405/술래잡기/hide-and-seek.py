@@ -80,7 +80,7 @@ def catch_runners(runners, board):
     area = []
     for i in range(3):
         cx, cy = tx + i * dx[td], ty + i * dy[td]
-        if board[cx][cy]:
+        if not out_of_bound(cx, cy) and board[cx][cy]:
             continue
         area.append([cx, cy])
 
