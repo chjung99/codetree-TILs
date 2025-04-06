@@ -37,17 +37,17 @@ def find_3d_end_2d_start():
 
             elif arr[i][j - 1] == 0:
                 si, sj = i, j - 1
-                ek_3d, ei_3d, ej_3d = 0, M - 1, (i - bi)
+                ek_3d, ei_3d, ej_3d = 1, M - 1, (i - bi)
                 return ek_3d, ei_3d, ek_3d, si, sj
 
             elif arr[i + 1][j] == 0:
                 si, sj = i + 1, j
-                ek_3d, ei_3d, ej_3d = 0, M - 1, (j - bj)
+                ek_3d, ei_3d, ej_3d = 2, M - 1, (j - bj)
                 return ek_3d, ei_3d, ek_3d, si, sj
 
             elif arr[i - 1][j] == 0:
                 si, sj = i - 1, j
-                ek_3d, ei_3d, ej_3d = 0, M - 1, (M - 1) - (j - bj)
+                ek_3d, ei_3d, ej_3d = 3, M - 1, (M - 1) - (j - bj)
                 return ek_3d, ei_3d, ek_3d, si, sj
 
 
