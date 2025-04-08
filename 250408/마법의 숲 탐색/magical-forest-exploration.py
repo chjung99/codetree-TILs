@@ -54,9 +54,10 @@ def check_3(r, c):
 
 
 def check_4(r, c):
+
     for i in range(4):
         nr, nc = r + dx[i], c + dy[i]
-        if nr < 2:
+        if nr <= 2:
             return False
     return True
 
@@ -151,7 +152,10 @@ for i in range(K):
         move_person(r, c)
     # for p in range(R + 3):
     #     for q in range(C):
-    #         print(board[p][q], end=" ")
+    #         if exit[p][q]:
+    #             print("-1", end=" ")
+    #         else:
+    #             print(board[p][q], end=" ")
     #     print("")
     # print("====================")
 print(answer)
