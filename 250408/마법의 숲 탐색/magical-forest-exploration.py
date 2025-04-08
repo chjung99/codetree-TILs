@@ -1,161 +1,93 @@
 from collections import deque
 
+MAX_L = 70
 
-def out_of_range(x, y):
-    return x < 0 or x >= R + 3 or y < 0 or y >= C
+R, C, K = 0, 0, 0 # 행, 열, 골렘의 개수를 의미합니다
+A = [[0] * MAX_L for _ in range(MAX_L + 3)] # 실제 숲을 [3~R+2][0~C-1]로 사용하기위해 행은 3만큼의 크기를 더 갖습니다
+dy = [-1, 0, 1, 0]
+dx = [0, 1, 0, -1]
+isExit = [[False] * MAX_L for _ in range(MAX_L + 3)] # 해당 칸이 골렘의 출구인지 저장합니다
+answer = 0 # 각 정령들이 도달할 수 있는 최하단 행의 총합을 저장합니다
 
+# (y, x)가 숲의 범위 안에 있는지 확인하는 함수입니다
+def inRange(y, x):
+    return 3 <= y < R + 3 and 0 <= x < C
 
-def check(r, c):
-    if out_of_range(r, c) or board[r][c] != 0:
-        return False
+# 숲에 있는 골렘들이 모두 빠져나갑니다
+def resetMap():
+    for i in range(R + 3):
+        for j in range(C):
+            A[i][j] = 0
+            isExit[i][j] = False
+
+# 골렘의 중심이 y, x에 위치할 수 있는지 확인합니다.
+# 북쪽에서 남쪽으로 내려와야하므로 중심이 (y, x)에 위치할때의 범위와 (y-1, x)에 위치할떄의 범위 모두 확인합니다
+def canGo(y, x):
+    flag = 0 <= x - 1 and x + 1 < C and y + 1 < R + 3
+    flag = flag and (A[y - 1][x - 1] == 0)
+    flag = flag and (A[y - 1][x] == 0)
+    flag = flag and (A[y - 1][x + 1] == 0)
+    flag = flag and (A[y][x - 1] == 0)
+    flag = flag and (A[y][x] == 0)
+    flag = flag and (A[y][x + 1] == 0)
+    flag = flag and (A[y + 1][x] == 0)
+    return flag
+
+# 정령이 움직일 수 있는 모든 범위를 확인하고 도달할 수 있는 최하단 행을 반환합니다
+def bfs(y, x):
+    result = y
+    q = deque([(y, x)])
+    visit = [[False] * C for _ in range(R + 3)]
+    visit[y][x] = True
+    while q:
+        cur_y, cur_x = q.popleft()
+        for k in range(4):
+            ny, nx = cur_y + dy[k], cur_x + dx[k]
+            # 정령의 움직임은 골렘 내부이거나
+            # 골렘의 탈출구에 위치하고 있다면 다른 골렘으로 옮겨 갈 수 있습니다
+            if inRange(ny, nx) and not visit[ny][nx] and (A[ny][nx] == A[cur_y][cur_x] or (A[ny][nx] != 0 and isExit[cur_y][cur_x])):
+                q.append((ny, nx))
+                visit[ny][nx] = True
+                result = max(result, ny)
+    return result
+
+# 골렘id가 중심 (y, x), 출구의 방향이 d일때 규칙에 따라 움직임을 취하는 함수입니다
+# 1. 남쪽으로 한 칸 내려갑니다.
+# 2. (1)의 방법으로 이동할 수 없으면 서쪽 방향으로 회전하면서 내려갑니다.
+# 3. (1)과 (2)의 방법으로 이동할 수 없으면 동쪽 방향으로 회전하면서 내려갑니다.
+def down(y, x, d, id):
+    if canGo(y + 1, x):
+        # 아래로 내려갈 수 있는 경우입니다
+        down(y + 1, x, d, id)
+    elif canGo(y + 1, x - 1):
+        # 왼쪽 아래로 내려갈 수 있는 경우입니다
+        down(y + 1, x - 1, (d + 3) % 4, id)
+    elif canGo(y + 1, x + 1):
+        # 오른쪽 아래로 내려갈 수 있는 경우입니다
+        down(y + 1, x + 1, (d + 1) % 4, id)
     else:
-        return True
-
-
-def check_1(r, c):
-    br, bc = r + dx[2], c + dy[2]
-
-    left_r, left_c = br, bc - 1
-    right_r, right_c = br, bc + 1
-    bot_r, bot_c = br + 1, bc
-
-    return check(left_r, left_c) and check(right_r, right_c) and \
-        check(bot_r, bot_c)
-
-
-def check_2(r, c):
-    lr, lc = r + dx[3], c + dy[3]
-
-    left_r, left_c = lr, lc - 1
-    bot_r, bot_c = lr + 1, lc
-    top_r, top_c = lr - 1, lc
-
-    left_bot_r, left_bot_c = left_r + 1, left_c
-    bot_bot_r, bot_bot_c = bot_r + 1, bot_c
-
-    return check(left_r, left_c) and check(bot_r, bot_c) and \
-        check(top_r, top_c) and check(left_bot_r, left_bot_c) and \
-        check(bot_bot_r, bot_bot_c)
-
-
-def check_3(r, c):
-    rr, rc = r + dx[1], c + dy[1]
-
-    right_r, right_c = rr, rc + 1
-    top_r, top_c = rr - 1, rc
-    bot_r, bot_c = rr + 1, rc
-
-    right_bot_r, right_bot_c = right_r + 1, right_c
-    bot_bot_r, bot_bot_c = bot_r + 1, bot_c
-
-    return check(right_r, right_c) and check(top_r, top_c) and \
-        check(bot_r, bot_c) and check(right_bot_r, right_bot_c) and \
-        check(bot_bot_r, bot_bot_c)
-
-
-def check_4(r, c):
-
-    for i in range(4):
-        nr, nc = r + dx[i], c + dy[i]
-        if nr <= 2:
-            return False
-    return True
-
-
-def move_south():
-    global r
-    r += 1
-
-
-def turn_west_and_move_south():
-    global r, c, d
-    r, c = r, c - 1
-    d = (d - 1) % 4
-    move_south()
-
-
-def turn_east_and_move_south():
-    global r, c, d
-    r, c = r, c + 1
-    d = (d + 1) % 4
-    move_south()
-
-
-def set_golem(r, c, d, num):
-    board[r][c] = num
-    for i in range(4):
-        if i == d:
-            exit[r + dx[i]][c + dy[i]] = 1
-        board[r + dx[i]][c + dy[i]] = num
-
-
-def bfs(x, y, board):
-    visit = [[0]*C for _ in range(R+3)]
-    max_row = x
-    visit[x][y] = 1
-    queue = deque([[x, y]])
-
-    while queue:
-        cx, cy = queue.popleft()
-        for i in range(4):
-            nx, ny = cx + dx[i], cy + dy[i]
-            if out_of_range(nx, ny) or visit[nx][ny]:
-                continue
-            if board[nx][ny] == 0:
-                continue
-
-            if board[nx][ny] == board[cx][cy] or exit[cx][cy]:
-                max_row = max(max_row, nx)
-                visit[nx][ny] = 1
-                queue.append([nx, ny])
-    # print(max_row-2)
-    return max_row - 2
-
-
-def move_person(r, c):
-    global answer
-    answer += bfs(r, c, board)
-
-
-R, C, K = map(int, input().split())
-golems = [list(map(int, input().split())) for _ in range(K)]
-
-dx = [-1, 0, 1, 0]
-dy = [0, 1, 0, -1]
-
-board = [[0] * C for _ in range(R + 3)]
-exit = [[0] * C for _ in range(R + 3)]
-answer = 0  # 행의 총합 좌표 연산 주의
-
-for i in range(K):
-    r, c, d = 0, golems[i][0] - 1, golems[i][1]
-
-    while True:
-        chk1 = check_1(r, c)
-        chk2 = check_2(r, c)
-        chk3 = check_3(r, c)
-        if chk1:
-            move_south()
-        elif chk2:
-            turn_west_and_move_south()
-        elif chk3:
-            turn_east_and_move_south()
+        # 1, 2, 3의 움직임을 모두 취할 수 없을떄 입니다.
+        if not inRange(y-1, x-1) or not inRange(y+1, x+1):
+            # 숲을 벗어나는 경우 모든 골렘이 숲을 빠져나갑니다
+            resetMap()
         else:
-            if check_4(r, c):
-                set_golem(r, c, d, i+1)
+            # 골렘이 숲 안에 정착합니다
+            A[y][x] = id
+            for k in range(4):
+                A[y + dy[k]][x + dx[k]] = id
+            # 골렘의 출구를 기록하고
+            isExit[y + dy[d]][x + dx[d]] = True
+            global answer
+            # bfs를 통해 정령이 최대로 내려갈 수 있는 행를 계산하여 누적합니다
+            answer += bfs(y, x) - 3 + 1
 
-            else:
-                board = [[0] * C for _ in range(R + 3)]
-                exit = [[0] * C for _ in range(R + 3)]
-            break
-    if check_4(r, c):
-        move_person(r, c)
-    # for p in range(R + 3):
-    #     for q in range(C):
-    #         if exit[p][q]:
-    #             print("-1", end=" ")
-    #         else:
-    #             print(board[p][q], end=" ")
-    #     print("")
-    # print("====================")
-print(answer)
+def main():
+    global R, C, K
+    R, C, K = map(int, input().split())
+    for id in range(1, K + 1): # 골렘 번호 id
+        x, d = map(int, input().split()) # 골렘의 출발 x좌표, 방향 d를 입력받습니다
+        down(0, x - 1, d, id)
+    print(answer)
+
+if __name__ == "__main__":
+    main()
