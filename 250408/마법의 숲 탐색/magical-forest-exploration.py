@@ -128,7 +128,7 @@ answer = 0  # 행의 총합 좌표 연산 주의
 
 for i in range(K):
     r, c, d = 0, golems[i][0] - 1, golems[i][1]
-    flag = True
+
     while True:
         chk1 = check_1(r, c)
         chk2 = check_2(r, c)
@@ -144,11 +144,10 @@ for i in range(K):
                 set_golem(r, c, d, i+1)
 
             else:
-                flag = False
                 board = [[0] * C for _ in range(R + 3)]
                 exit = [[0] * C for _ in range(R + 3)]
             break
-    if flag:
+    if check_4(r, c):
         move_person(r, c)
     # for p in range(R + 3):
     #     for q in range(C):
