@@ -81,7 +81,6 @@ def turn_east_and_move_south():
 
 
 def set_golem(r, c, d, num):
-    global board
     board[r][c] = num
     for i in range(4):
         if i == d:
@@ -129,6 +128,7 @@ answer = 0  # 행의 총합 좌표 연산 주의
 
 for i in range(K):
     r, c, d = 0, golems[i][0] - 1, golems[i][1]
+    flag = True
     while True:
         chk1 = check_1(r, c)
         chk2 = check_2(r, c)
@@ -142,11 +142,14 @@ for i in range(K):
         else:
             if check_4(r, c):
                 set_golem(r, c, d, i+1)
+
             else:
+                flag = False
                 board = [[0] * C for _ in range(R + 3)]
                 exit = [[0] * C for _ in range(R + 3)]
             break
-    move_person(r, c)
+    if flag:
+        move_person(r, c)
     # for p in range(R + 3):
     #     for q in range(C):
     #         print(board[p][q], end=" ")
